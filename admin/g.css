@@ -1,0 +1,157 @@
+
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+
+.card {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  color: #333;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-title, .card-sub { color: #555; }
+.card-value { color: #333; }
+
+.card.stats ul { padding-left:16px; margin:8px 0 0 0; color: #555; }
+
+/* Circles in cards */
+.circle {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 12px;
+}
+
+.circle svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle circle {
+  fill: none;
+  stroke-width: 8;
+  cx: 40;
+  cy: 40;
+  r: 30;
+}
+
+.circle .bg { stroke: #eee; }
+.circle .progress { stroke: var(--accent); stroke-dasharray: 188.4; stroke-dashoffset: 188.4; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+
+.circle .number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Grid panels */
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-top:20px}
+
+.panel {
+  background: var(--panel);
+  padding:14px;
+  border-radius:12px;
+  color: #333;
+}
+
+.panel h3 { margin:0 0 8px 0; color: #333; }
+
+/* Orders table */
+.orders-table{width:100%;border-collapse:collapse}
+.orders-table th, .orders-table td{
+  padding:10px 8px;
+  text-align:right;
+  border-bottom:1px dashed #ddd;
+  font-size:14px;
+}
+.orders-table th{color: var(--muted); font-weight:600;}
+
+/* Status badges */
+.status{padding:6px 8px; border-radius:8px; font-weight:600;}
+.status.pending{background: #fff3e0; color: #ef6c00;}
+.status.done{background: #e8f5e9; color: #43a047;}
+.status.deliver{background: #e3f2fd; color: #2196f3;}
+
+/* Reviews */
+.reviews{display:flex;flex-direction:column;gap:8px}
+.review{background:#fafafa; padding:8px; border-radius:8px;}
+.review .meta{font-size:13px; color:#555;}
+
+/* Footer */
+
+
+.footer-social a { color: var(--accent); margin-right:12px; font-size:16px; transition: 0.2s; }
+.footer-social a:hover { color: var(--accent-2); transform: scale(1.2); }
+
+.footer-copy { width:100%; text-align:center; margin-top:12px; color:#888; font-size:12px; }
+
+/* Responsive */
+@media(max-width:980px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+@media(max-width:640px){.sidebar{display:none}.search input{width:200px}}
+
+
+/* تحسين نصوص البطاقات في الوضع الداكن */
+body.dark-mode .card,
+body.dark-mode .panel,
+body.dark-mode .stats,
+body.dark-mode .panel-header,
+body.dark-mode .card-title,
+body.dark-mode .value,
+body.dark-mode .title {
+  color: #fff !important;
+}
+
+/* لو الخلفية داكنة جدًا، نجعلها أفتح قليلاً */
+body.dark-mode .card,
+body.dark-mode .panel {
+  background: #222 !important;
+  border-color: #444 !important;
+}
+/* نص القوائم في الوضع الداكن */
+/* Dark theme variables */
+body.dark {
+  --bg: #1e1e2f;
+  --panel: #2c2c3e;
+  --accent: #ef6c00;
+  --accent-2: #ffb74d;
+  --muted: #bbbbbb;
+  --text: #ffffff;       /* للنصوص العامة */
+  --text-card: #ffffff;  /* للنصوص داخل البطاقات الداكنة */
+}
+
+/* نصوص البطاقات في الوضع الداكن */
+body.dark .card,
+body.dark .panel {
+  background: var(--panel);
+  color: var(--text-card); /* يطبق على كل النصوص داخل البطاقة */
+}
+
+/* نص القوائم داخل البطاقة */
+body.dark .card.stats ul,
+body.dark .card.stats ul li {
+  color: var(--text-card);
+  font-weight: bold;
+}
+/* Dark theme for panels */
+body.dark .panel {
+  background: var(--panel);
+  color: var(--text-card); /* كل النصوص داخل البانل تصبح واضحة */
+}
+
+/* نص العناوين داخل البانل */
+body.dark .panel h3 {
+  color: var(--text-card); /* أبيض وواضح */
+  font-weight: 600;
+}

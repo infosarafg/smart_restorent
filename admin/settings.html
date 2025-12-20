@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SmartRestaurant — Settings</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="assets/css/admin-base.css">
+  <link rel="stylesheet" href="setting.css" />
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- ================= Sidebar ================= -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="logo.png" alt="logo"/>
+      </div>
+
+      <nav class="nav">
+        <a class="nav-item active" href="#"><i class="fas fa-tachometer-alt"></i>
+          <span data-i18n="menu_dashboard">Dashboard</span></a>
+        <a class="nav-item" href="orders.html"><i class="fas fa-receipt"></i>
+          <span data-i18n="menu_orders">Orders</span></a>
+        <a class="nav-item" href="meals.html"><i class="fas fa-utensils"></i>
+          <span data-i18n="menu_meals">Meals</span></a>
+        <a class="nav-item" href="reservations.html"><i class="fas fa-calendar-check"></i> <span data-i18n="reservations">Reservations</span></a>
+
+        <a class="nav-item" href="Customers.html"><i class="fas fa-users"></i>
+          <span data-i18n="menu_customers">Customers</span></a>
+        
+        <a class="nav-item" href="settings.html"><i class="fas fa-cog"></i>
+          <span data-i18n="menu_settings">Settings</span></a>
+      
+    </aside>
+
+    <!-- ================= Main ================= -->
+    <main class="main">
+
+      <!-- =============== Topbar =============== -->
+      <header class="topbar">
+        <div class="search">
+          <input placeholder="Search for an order or meal..." />
+        </div>
+
+        <div class="top-actions">
+          <i class="fas fa-bell"></i>
+          <i class="fas fa-envelope"></i>
+          <i class="fas fa-heart"></i>
+        </div>
+
+        <!-- ===== Admin Profile with Dropdown ===== -->
+        <div class="admin-profile" id="profile-btn">
+          <img src="admin.jpg" alt="Admin">
+          <span id="admin-name-top">Sarah Azouz</span>
+
+          <!-- ---------- Profile Menu ---------- -->
+          <div class="profile-menu" id="profile-menu">
+            <div class="profile-info">
+              <img src="admin.jpg" id="profile-menu-img">
+              <div>
+                <h4 id="menu_admin_name">Sarah Azouz</h4>
+                <p id="menu_admin_email">admin@mail.com</p>
+              </div>
+            </div>
+
+            <a href="settings.html" class="profile-item">
+              <i class="fas fa-user-cog"></i>
+              <span id="menu_settings">Profile Settings</span>
+            </a>
+
+            <a href="#" class="profile-item">
+              <i class="fas fa-bell"></i>
+              <span id="menu_notifications">Notifications</span>
+            </a>
+
+            <a href="#" class="profile-item logout">
+              <i class="fas fa-sign-out-alt"></i>
+              <span id="menu_logout">Logout</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- ================= Page Content ================= -->
+      <section class="content">
+
+        <div class="page-header">
+          <h2 id="title_settings">Restaurant Settings</h2>
+
+          <nav class="breadcrumb">
+            <span id="crumb_home">Home</span> /
+            <span id="crumb_settings">Settings</span>
+          </nav>
+        </div>
+
+        <!-- ================= Settings Container ================= -->
+        <div class="settings-container">
+
+          <!-- ~~~~~~~~~~~~ System Settings ~~~~~~~~~~~~ -->
+          <section class="settings-section">
+            <h3>System Settings</h3>
+
+            <!-- Language -->
+            <div class="setting-item">
+              <label for="lang" id="lbl_lang">Language</label>
+              <select id="lang">
+                <option value="ar">Arabic</option>
+                <option value="en">English</option>
+                <option value="fr">French</option>
+              </select>
+            </div>
+
+            <!-- Theme -->
+            <div class="setting-item">
+              <label for="theme" id="lbl_theme">Theme</label>
+              <select id="theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
+
+            <!-- Font Size -->
+            <div class="setting-item">
+              <label for="font-size" id="lbl_font">Font Size</label>
+              <input type="range" id="font-size" min="12" max="22" value="16">
+            </div>
+
+            <!-- Notifications -->
+            <div class="setting-item">
+              <label for="notif" id="lbl_notif">Enable Notifications</label>
+              <input type="checkbox" id="notif" checked>
+            </div>
+
+            <!-- Email Verification -->
+            <div class="setting-item">
+              <label for="email-code" id="lbl_email">Email for verification</label>
+              <input type="email" id="email-code" placeholder="admin@mail.com">
+            </div>
+          </section>
+
+          <!-- ~~~~~~~~~~~~ Admin Profile Settings ~~~~~~~~~~~~ -->
+          <section class="settings-section">
+            <h3>Admin Profile</h3>
+
+            <div class="setting-item">
+              <label id="lbl_admin_name">Admin Name</label>
+              <input type="text" id="admin_name" placeholder="Your Name">
+            </div>
+
+            <div class="setting-item">
+              <label id="lbl_admin_email">Admin Email</label>
+              <input type="email" id="admin_email" placeholder="admin@mail.com">
+            </div>
+
+            <div class="setting-item">
+              <label id="lbl_admin_phone">Phone Number</label>
+              <input type="text" id="admin_phone" placeholder="+213 00 00 00 00">
+            </div>
+
+            <div class="setting-item">
+              <label id="lbl_admin_img">Profile Image</label>
+              <input type="file" id="admin_img" accept="image/*">
+            </div>
+            <!-- Logo Setting -->
+            <div class="setting-item">
+               <label for="restaurant_logo">Restaurant Logo</label>
+               <input type="file" id="restaurant_logo" accept="image/*">
+               <img id="logo_preview" src="logo.png" alt="Logo Preview" style="width:50px; height:50px; display:block; margin-top:5px;">
+             </div>
+
+          </section>
+
+        </div>
+
+      </section>
+    </main>
+
+  </div>
+  <script src="translations.js"></script>
+
+  <script src="setting.js" defer></script>
+</body>
+</html>

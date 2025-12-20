@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="title">Orders Management Dashboard — SmartRestaurant</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="assets/css/admin-base.css">
+  <link rel="stylesheet" href="orders.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="logo.png" alt="logo"/>
+      </div>
+      <nav class="nav">   
+        <a class="nav-item" href="t.html"><i class="fas fa-tachometer-alt"></i> <span data-i18n="dashboard">Dashboard</span></a>
+        <a class="nav-item active" href="#"><i class="fas fa-receipt"></i> <span data-i18n="orders">Orders</span></a>
+        <a class="nav-item" href="meals.html"><i class="fas fa-utensils"></i> <span data-i18n="meals">Meals</span></a>
+        <a class="nav-item" href="reservations.html"><i class="fas fa-calendar-check"></i> <span data-i18n="reservations">Reservations</span></a>
+        <a class="nav-item" href="Customers.html"><i class="fas fa-users"></i> <span data-i18n="customers">Customers</span></a>
+        <a class="nav-item" href="settings.html"><i class="fas fa-cog"></i> <span data-i18n="settings">Settings</span></a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main">
+      <header class="topbar">
+        <div class="search">
+          <input placeholder="Search for an order or meal..." data-i18n-placeholder="search_placeholder"/>
+        </div>
+
+        <div class="top-actions">
+          <i class="fas fa-bell" data-i18n="notifications_icon"></i>
+          <i class="fas fa-envelope" data-i18n="messages_icon"></i>
+          <i class="fas fa-heart" data-i18n="favorites_icon"></i>
+        </div>
+
+        <!-- ===== Admin Profile with Dropdown ===== -->
+        <div class="admin-profile" id="profile-btn">
+          <img src="admin.jpg" alt="Admin">
+          <span id="admin-name-top">Sarah Azouz</span>
+
+          <!-- ---------- Profile Menu ---------- -->
+          <div class="profile-menu" id="profile-menu">
+            <div class="profile-info">
+              <img src="admin.jpg" id="profile-menu-img">
+              <div>
+                <h4 id="menu_admin_name">Sarah Azouz</h4>
+                <p id="menu_admin_email">admin@mail.com</p>
+              </div>
+            </div>
+
+            <a href="settings.html" class="profile-item">
+              <i class="fas fa-user-cog"></i>
+              <span id="menu_settings" data-i18n="profile_settings">Profile Settings</span>
+            </a>
+
+            <a href="#" class="profile-item">
+              <i class="fas fa-bell"></i>
+              <span id="menu_notifications" data-i18n="notifications">Notifications</span>
+            </a>
+
+            <a href="#" class="profile-item logout">
+              <i class="fas fa-sign-out-alt"></i>
+              <span id="menu_logout" data-i18n="logout">Logout</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="page-header">
+          <h2 data-i18n="orders_dashboard">Orders Management Dashboard</h2>
+          <nav class="breadcrumb"><span data-i18n="home">Home</span> / <span data-i18n="orders">Orders</span></nav>
+        </div>
+
+        <!-- Statistics -->
+        <div class="cards">
+          <div class="card stat">
+            <div class="title" data-i18n="todays_orders">Today's Orders</div>
+            <div class="circle circle-pending">
+              <svg>
+                <circle class="bg" r="30" cx="40" cy="40"></circle>
+                <circle class="progress" r="30" cx="40" cy="40"></circle>
+              </svg>
+              <div class="number">0%</div>
+            </div>
+          </div>
+          <div class="card stat warning">
+            <div class="title" data-i18n="preparing">Preparing</div>
+            <div class="circle circle-preparing">
+              <svg>
+                <circle class="bg" r="30" cx="40" cy="40"></circle>
+                <circle class="progress" r="30" cx="40" cy="40"></circle>
+              </svg>
+              <div class="number">0%</div>
+            </div>
+          </div>
+          <div class="card stat info">
+            <div class="title" data-i18n="on_the_way">On the Way</div>
+            <div class="circle circle-onway">
+              <svg>
+                <circle class="bg" r="30" cx="40" cy="40"></circle>
+                <circle class="progress" r="30" cx="40" cy="40"></circle>
+              </svg>
+              <div class="number">0%</div>
+            </div>
+          </div>
+          <div class="card stat success">
+            <div class="title" data-i18n="delivered">Delivered</div>
+            <div class="circle circle-delivered">
+              <svg>
+                <circle class="bg" r="30" cx="40" cy="40"></circle>
+                <circle class="progress" r="30" cx="40" cy="40"></circle>
+              </svg>
+              <div class="number">0%</div>
+            </div>
+          </div>
+          <div class="card stat revenue">
+            <div class="title" data-i18n="total_revenue">Total Revenue</div>
+            <div class="value" id="statRevenue">0 DZD</div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+          <div class="actions-group">
+            <button id="btnAdd" class="btn" data-i18n="add_new_order">Add New Order</button>
+            <button id="exportBtn" class="btn ghost" data-i18n="export_csv">Export CSV</button>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="grid">
+          <div class="panel panel-orders">
+            <div class="panel-header">
+              <h3 data-i18n="all_orders">All Orders</h3>
+              <div class="panel-actions">
+                <select id="statusQuickFilter" data-i18n="status_filter">
+                  <option value="" data-i18n="all_statuses">All Statuses</option>
+                  <option value="pending" data-i18n="new">New</option>
+                  <option value="preparing" data-i18n="preparing">Preparing</option>
+                  <option value="onway" data-i18n="on_the_way">On the Way</option>
+                  <option value="delivered" data-i18n="delivered">Delivered</option>
+                  <option value="canceled" data-i18n="canceled">Canceled</option>
+                </select>
+              </div>
+            </div>
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th data-i18n="number">#</th>
+                  <th data-i18n="customer">Customer</th>
+                  <th data-i18n="phone">Phone</th>
+                  <th data-i18n="address">Address</th>
+                  <th data-i18n="meals">Meals</th>
+                  <th data-i18n="total">Total</th>
+                  <th data-i18n="status">Status</th>
+                  <th data-i18n="time">Time</th>
+                  <th data-i18n="actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ordersBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Charts & Top Customers -->
+          <div class="panel panel-right">
+            <h3 data-i18n="statistics_top_customers">Statistics & Top Customers</h3>
+            <div class="chart-wrap">
+              <canvas id="salesChart" height="180"></canvas>
+            </div>
+            <h4 class="small-title" data-i18n="status_ratios">Status Ratios</h4>
+            <div class="chart-wrap">
+              <canvas id="statusPie" width="120" height="120"></canvas>
+            </div>
+            <h4 class="small-title" data-i18n="top_5_customers">Top 5 Customers</h4>
+            <ul id="topCustomers" class="top-customers"></ul>
+          </div>
+        </div>
+      </section>
+
+      <footer class="main-footer">
+        <div class="footer-container">
+          <div class="footer-info">
+            <h4 data-i18n="smartrestaurant">SmartRestaurant</h4>
+            <p data-i18n="address">123 Food Street, Algiers</p>
+            <p>📧 info@smartrestaurant.dz | 📞 +213 555 123 456</p>
+          </div>
+          <div class="footer-copy">&copy; 2025 SmartRestaurant</div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="orderModal" class="modal" aria-hidden="true">
+    <div class="modal-panel">
+      <h3 id="modalTitle" data-i18n="add_new_order_modal">Add New Order</h3>
+      <form id="orderForm">
+        <input type="hidden" id="orderId">
+
+        <!-- Customers and meals populated dynamically -->
+        <label data-i18n="customer_label">Customer:
+          <select id="customerSelect" required></select>
+        </label>
+
+        <label data-i18n="meal_label">Meal:
+          <select id="mealSelect" required></select>
+        </label>
+
+        <label data-i18n="quantity_label">Quantity:
+          <input type="number" id="quantity" value="1" min="1">
+        </label>
+
+        <label data-i18n="price_label">Price (DZD):
+          <input type="number" id="price" step="0.01" min="0">
+        </label>
+
+        <label data-i18n="total_label">Total (DZD):
+          <input type="number" id="total" readonly>
+        </label>
+
+        <label data-i18n="status_label">Status:
+          <select id="status">
+            <option value="pending" data-i18n="new">New</option>
+            <option value="preparing" data-i18n="preparing">Preparing</option>
+            <option value="onway" data-i18n="on_the_way">On the Way</option>
+            <option value="delivered" data-i18n="delivered">Delivered</option>
+            <option value="canceled" data-i18n="canceled">Canceled</option>
+          </select>
+        </label>
+
+        <label data-i18n="datetime_label">Date & Time:
+          <input type="datetime-local" id="orderDatetime">
+        </label>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn" data-i18n="save">Save</button>
+          <button type="button" id="cancelModal" class="btn ghost" data-i18n="cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="translations.js"></script>
+  <script src="setting.js" defer></script>
+  <script src="orders-dashboard.js"></script>
+</body>
+</html>

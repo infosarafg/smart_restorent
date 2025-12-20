@@ -1,0 +1,175 @@
+
+
+
+
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,       -- Customer ID
+    first_name VARCHAR(50) NOT NULL,      -- First name
+    last_name VARCHAR(50) NOT NULL,       -- Last name
+    phone VARCHAR(20),                     -- Phone number
+    address VARCHAR(255),                  -- Address
+    email VARCHAR(100) UNIQUE,             -- Email
+    username VARCHAR(50) UNIQUE            -- Username
+);
+CREATE TYPE table_status_enum AS ENUM ('Available','Reserved','Occupied');
+CREATE TYPE order_status_enum AS ENUM ('pending','preparing','onway','delivered','canceled');
+
+
+ALTER TABLE customers
+ADD COLUMN profile_image_url VARCHAR(255);
+
+
+  SELECT * FROM customers;
+DELETE FROM customers;
+
+-- Tables table (restaurant tables)
+CREATE TABLE tables (
+    table_id SERIAL PRIMARY KEY,
+    table_number INT NOT NULL UNIQUE,
+    capacity INT DEFAULT 4,
+    location VARCHAR(100),
+    status table_status_enum DEFAULT 'Available'
+);
+
+-- Reservations table
+CREATE TABLE reservations (
+    reservation_id SERIAL PRIMARY KEY,
+    customer_id INT NOT NULL,
+    table_id INT NOT NULL,
+    reservation_datetime TIMESTAMP NOT NULL,
+    notes TEXT,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
+    FOREIGN KEY (table_id) REFERENCES tables(table_id) ON DELETE CASCADE
+);
+
+-- Orders table
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT NOT NULL,
+    meal_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    price DECIMAL(10,2) NOT NULL,
+    status order_status_enum DEFAULT 'pending',
+    order_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
+    FOREIGN KEY (meal_id) REFERENCES meals(meal_id) ON DELETE CASCADE
+);
+
+-- حذف المستخدم "Al Bensalem"
+DELETE FROM customers WHERE username = 'ali45';
+
+-- حذف المستخدم "Sara Azouz"
+DELETE FROM customers WHERE username = 'sara123';
+
+-- حذف المستخدم "Ali Bensalem"
+DELETE FROM customers WHERE username = 'ali456';
+
+
+INSERT INTO orders (customer_id, meal_id, quantity, price, status)
+VALUES
+(1, 1, 2, 11.00, 'pending'),      -- عميل 1 طلب 2 من Pancakes
+(2, 3, 1, 10.50, 'preparing');    -- عميل 2 طلب 1 Spaghetti Bolognese
+SELECT * FROM orders WHERE customer_id = 1;
+-- تعديل جدول الزبائن لإضافة كلمة المرور
+ALTER TABLE customers
+ADD COLUMN password VARCHAR(255) NOT NULL;
+
+
+INSERT INTO customers (first_name, last_name, phone, address, email, username, password)
+VALUES 
+('Sara', 'Azouz', '0555123456', 'Alger', 'sara@example.com', 'sara123', '123456'),
+('Ali', 'Bensalem', '0555987654', 'Oran', 'ali@example.com', 'ali456', 'password123');
+CREATE TABLE meal_categories (
+    category_id SERIAL PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE
+);
+INSERT INTO meal_categories (category_name) VALUES
+('تقليدية'),
+('سريعة'),
+('صحية'),
+('مشروبات');
+DELETE FROM meal_categories WHERE category_name = 'Traditional';
+DELETE FROM meal_categories WHERE category_name = 'Fast Food';
+DELETE FROM meal_categories WHERE category_name = 'Healthy';
+
+INSERT INTO meal_categories (category_name) VALUES
+('Traditional'),
+('Fast Food'),
+('Healthy'),
+('Drinks');
+
+CREATE TYPE meal_time_enum AS ENUM ('Breakfast','Lunch','Dinner','Always');
+DROP TABLE IF EXISTS meals CASCADE;
+DROP TABLE  IF EXISTS meals CASCADE;
+CREATE TABLE meals (
+    meal_id SERIAL PRIMARY KEY,
+    category_id INT NOT NULL,                       -- فئة الوجبة (تقليدية/سريعة...)
+    meal_time meal_time_enum DEFAULT 'Always',       -- توقيت الوجبة (غداء/عشاء/دائما)
+    name VARCHAR(100) NOT NULL,
+    price NUMERIC(10,2) NOT NULL,
+    description TEXT,
+    image_url TEXT,
+    FOREIGN KEY (category_id) REFERENCES meal_categories(category_id) ON DELETE RESTRICT
+
+   
+);
+INSERT INTO meals (category_id, meal_time, name, price, description, image_url)
+VALUES
+(1, 'Breakfast', 'كسرة تقليدية', 5.00, 'كسرة بالزبدة والعسل', 'https://example.com/kesra.jpg'),
+(2, 'Lunch', 'برغر لحم', 8.50, 'وجبة سريعة مع لحم وجودة عالية', 'https://example.com/burger.jpg'),
+(2, 'Dinner', 'بيتزا مارجريتا', 9.00, 'بيتزا إيطالية شهية', 'https://example.com/pizza.jpg'),
+(3, 'Dinner', 'سلطة صحية', 7.00, 'سلطة خفيفة بالعشاء', 'https://example.com/salad.jpg'),
+(4, 'Always', 'قهوة بالحليب', 2.00, 'مشروب متاح طوال اليوم', 'https://example.com/coffee.jpg'),
+(1, 'Lunch', 'كسكس تقليدي', 6.50, 'كسكس بالخضار واللحم', 'https://example.com/couscous.jpg'),
+(3, 'Lunch', 'عصير طبيعي', 3.00, 'عصير فواكه طبيعي', 'https://example.com/juice.jpg');
+ALTER TABLE customers
+ADD COLUMN age INT;
+
+ALTER TABLE customers
+ADD COLUMN health_condition VARCHAR(50);
+-- حذف أي بيانات سابقة لتفادي التكرار
+DELETE FROM customers;
+
+-- إضافة بيانات جديدة
+INSERT INTO customers (first_name, last_name, phone, address, email, username, password, age, health_condition)
+VALUES
+('Sara', 'Azouz', '0555123456', 'Alger', 'sara@example.com', 'sara123', '123456', 25, 'None'),
+('Ali', 'Bensalem', '0555987654', 'Oran', 'ali@example.com', 'ali456', 'password123', 35, 'Hypertension'),
+('Yasmine', 'Khaldi', '0555234567', 'Algiers','Yasmine@example.com', 'yasmine99', 'pass123', 10, 'None'),
+('Ahmed', 'Ziani', '0555765432', 'Blida', 'Ahmed@example.com','ahmed88', 'ahmedpass', 65, 'Diabetic'),
+('Meriem', 'Karim', '0555123987', 'Algiers', 'meriem@example.com', 'meriem1', 'meriempass', 12, 'None'),
+('Omar', 'Fares', '0555345678', 'Oran', 'omar@example.com', 'omar99', 'omarpass', 45, 'Hypertension'),
+('Leila', 'Salah', '0555123678', 'Blida', 'leila@example.com', 'leila77', 'leilapass', 28, 'None'),
+('Hassan', 'Amine', '0555123999', 'Alger', 'hassan@example.com', 'hassan88', 'hassanpass', 60, 'Diabetic');
+
+INSERT INTO orders (customer_id, meal_id, quantity, price, status)
+VALUES
+(28, 14, 2, 10.00, 'delivered'),    -- Sara طلبت كسرة تقليدية
+(28, 18, 1, 2.00, 'delivered'),     -- Sara طلبت قهوة بالحليب
+(29, 15, 1, 8.50, 'preparing'),     -- Ali طلب برغر لحم
+(29, 16, 1, 9.00, 'pending'),       -- Ali طلب بيتزا مارجريتا
+(30, 14, 1, 5.00, 'delivered'),     -- Yasmine طلب كسرة تقليدية
+(30,20, 1, 3.00, 'delivered'),     -- Yasmine طلب عصير طبيعي
+(31, 17, 1, 7.00, 'delivered'),     -- Ahmed طلب سلطة صحية
+(31, 18, 1, 2.00, 'pending'),       -- Ahmed طلب قهوة بالحليب
+(32, 14, 1, 5.00, 'delivered'),     -- Meriem طلب كسرة تقليدية
+(32, 20, 1, 3.00, 'delivered'),     -- Meriem طلب عصير طبيعي
+(33, 16, 2, 18.00, 'preparing'),    -- Omar طلب بيتزا مارجريتا
+(33, 15, 1, 8.50, 'preparing'),     -- Omar طلب برغر لحم
+(34, 15, 1, 8.50, 'delivered'),     -- Leila طلب برغر لحم
+(34, 20, 1, 3.00, 'delivered'),     -- Leila طلب عصير طبيعي
+(35, 17, 1, 7.00, 'delivered');   -- Ahmed طلب قهوة بالحليب
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS meals CASCADE;
+DROP TABLE IF EXISTS meal_categories CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
+DROP TYPE IF EXISTS meal_time_enum;
+DROP TYPE IF EXISTS order_status_enum;
+DROP TYPE IF EXISTS table_status_enum;
+ALTER TABLE orders
+ALTER COLUMN quantity TYPE INTEGER USING quantity::integer;
+delete from customers;
+delete from customers;
+delete from orders;
+select * from customers;
+

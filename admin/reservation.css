@@ -1,0 +1,176 @@
+/* ================================
+   Global Variables
+================================ */
+
+/* Dark Mode */
+
+
+/* ================================
+   Cards
+================================ */
+.table-card {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  border-left: 6px solid var(--primary);
+  transition: 0.25s ease;
+}
+
+.table-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Status Colors */
+.table-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #fff;
+}
+
+.status-Available {
+  background: #97e79a;
+}
+.status-Reserved {
+  background: #c19d67;
+}
+.status-Unavailable {
+  background: #f25a4f;
+}
+
+/* ================================
+   Buttons
+================================ */
+.btn.orange {
+  background: var(--primary);
+  color: white !important;
+  border-radius: 8px;
+}
+
+.btn.orange:hover {
+  background: var(--primary-dark);
+}
+
+/* ================================
+   Page Header
+================================ */
+.page-header h2 {
+  color: var(--text-primary);
+}
+.breadcrumb span {
+  color: var(--text-secondary);
+}
+
+/* ================================
+   Topbar
+================================ */
+.topbar {
+  background: var(--topbar-bg) !important;
+  color: var(--text-primary);
+}
+
+/* ================================
+   Sidebar
+================================ */
+.sidebar {
+  background: var(--sidebar-bg) !important;
+}
+
+.sidebar .nav-item {
+  color: var(--sidebar-text) !important;
+}
+
+.sidebar .nav-item.active {
+  background: var(--primary);
+  color: #fff !important;
+}
+
+/* ================================
+   Footer
+================================ */
+.main-footer {
+  background: var(--footer-bg) !important;
+  color: var(--text-primary);
+}
+
+.main-footer a {
+  color: var(--primary);
+}
+
+/* ================================
+   Search Input
+================================ */
+.search input {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid #ccc;
+}
+
+body.dark .search input {
+  border: 1px solid #333;
+}
+
+/* ================================
+   Grid for tables
+================================ */
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* Fix icon visibility in dark mode */
+body.dark i {
+  color: #fff;
+}
+.reservations-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 12px 0;
+}
+
+.tables-display {
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(239,108,0,0.1);
+}
+
+.tables-display h3 {
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.table-card {
+  background: var(--accent-2);
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.table-card.available {
+  background: #4caf50; /* أخضر للطاولة المتاحة */
+}
+
+.table-card.booked {
+  background: #f44336; /* أحمر للطاولة المحجوزة */
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.table-card:hover:not(.booked) {
+  transform: scale(1.05);
+}

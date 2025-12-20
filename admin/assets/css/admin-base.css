@@ -1,0 +1,594 @@
+:root{
+  --bg: #ffffff;          /* خلفية الصفحة */
+  --panel: #fefefe;       /* خلفية البطاقات */
+  --accent: #ef6c00;      /* برتقالي رئيسي */
+  --accent-2: #ffb74d;    /* برتقالي فاتح */
+  --muted: #555555;       /* نصوص ثانوية */
+  --glass: rgba(255,255,255,0.6); /* خلفية شبه شفافة */
+}
+
+*{box-sizing:border-box; font-family:Inter, "Segoe UI", Tahoma, Roboto, sans-serif}
+html, body, #root{height:100%}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #333333;
+  direction: ltr;
+}
+
+/* App layout */
+.app{display:flex; min-height:100vh}
+
+/* Sidebar */
+.sidebar {
+  width: 60px;
+  padding: 24px 8px;
+  background: #ffffff;
+  border-left: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s;
+  overflow: hidden;
+  min-width: 60px;
+  max-width: 260px;
+}
+
+.sidebar:hover { width: 260px; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 8px;
+  border-radius: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.nav-item:hover {
+  background: var(--accent);
+  color: #fff !important;
+  cursor: pointer;
+}
+
+.nav-item span { display: inline-block; transition: opacity 0.3s; }
+.sidebar:not(:hover) .nav-item span { opacity: 0; }
+
+.nav-item i {
+  width: 28px;
+  text-align: left;
+  font-size: 25px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+/* Main */
+.main{flex:1; display:flex; flex-direction:column}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 16px 24px;
+  background: #f8f8f8;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+
+.search input {
+  width: 360px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+}
+
+.top-actions {
+  position: absolute;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.top-actions i {
+  color: var(--accent);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.top-actions i:hover {
+  color: var(--accent-2);
+  transform: scale(1.15);
+}
+
+/* Admin profile */
+.admin-profile {
+  position: absolute;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-profile img {
+  width: 57px;
+  height: 57px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ef6c00;
+}
+
+.admin-profile span {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.brand img {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+}
+
+/* Page header */
+.page-header {
+  background: linear-gradient(90deg, rgba(239,108,0,0.08), rgba(255,183,77,0.04));
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.page-header h2 { margin: 0 0 6px 0; }
+
+.breadcrumb {
+  font-size: 14px;
+  color: var(--muted);
+  justify-content: flex-start;
+}
+
+.breadcrumb span { margin: 0 4px; }
+.breadcrumb span:last-child { font-weight: 600; color: #333; }
+
+
+.brand .logo {
+    width: 500px;   /* يمكن تعديل الرقم حسب الحجم المطلوب */
+    height: auto;   /* يحافظ على نسبة الأبعاد الأصلية */
+}
+  .brand .logo {
+    width: 150%;  /* نصف عرض العنصر الأب */
+    height: auto;
+}
+/* ===== Settings Container ===== */
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 12px 0;
+}
+
+/* كل قسم إعدادات */
+.settings-section {
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(239,108,0,0.1);
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.settings-section:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(239,108,0,0.15);
+}
+
+.settings-section h3 {
+  color: var(--accent);
+  margin-bottom: 16px;
+  font-size: 18px;
+  border-bottom: 2px solid var(--accent-2);
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+/* كل عنصر إعداد */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+
+.setting-item:hover {
+  background: rgba(239,108,0,0.05);
+}
+
+/* التسميات */
+.setting-item label {
+  font-weight: 600;
+  color: var(--muted);
+  flex: 1;
+}
+
+/* Inputs */
+.setting-item input[type="email"],
+.setting-item select,
+.setting-item input[type="range"] {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  min-width: 150px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.setting-item input[type="email"]:focus,
+.setting-item select:focus,
+.setting-item input[type="range"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 6px rgba(239,108,0,0.3);
+}
+
+/* Range slider styling */
+.setting-item input[type="range"] {
+  accent-color: var(--accent);
+}
+
+/* Checkboxes */
+.setting-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Placeholder style */
+.setting-item input::placeholder {
+  color: #aaa;
+}
+
+/* ===== Save/Reset Buttons ===== */
+.actions-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(239,108,0,0.2);
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--accent-2);
+  box-shadow: 0 6px 12px rgba(239,108,0,0.3);
+}
+
+.btn-secondary {
+  background: #f7f7f7;
+  color: var(--muted);
+  border: 1px solid #ddd;
+  transition: 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #fff4e6;
+  color: var(--accent);
+  border-color: var(--accent-2);
+}
+
+/* الرسالة بعد الحفظ */
+.save-msg {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--accent);
+  min-height: 18px;
+  transition: opacity 0.3s;
+}
+
+/* ===== Breadcrumb & Page Header ===== */
+.page-header {
+  background: linear-gradient(90deg, rgba(239,108,0,0.1), rgba(255,183,77,0.05));
+  box-shadow: 0 4px 12px rgba(239,108,0,0.08);
+}
+
+.page-header h2 {
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.breadcrumb span:last-child {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== Responsive adjustments ===== */
+@media(max-width: 900px){
+  .sidebar { width: 70px; }
+  .sidebar:hover { width: 200px; }
+  .search input { width: 220px; }
+}
+/* Dark Theme */
+.dark-theme {
+  --bg: #1e1e2f;
+  --panel: #2c2c3e;
+  --accent: #ef6c00;
+  --accent-2: #ffb74d;
+  --muted: #bbbbbb;
+  --text: #ffffff;
+  --glass: rgba(255,255,255,0.05);
+}
+
+.dark-theme body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Sidebar */
+.dark-theme .sidebar {
+  background: var(--panel);
+  border-left: 1px solid #444;
+}
+.dark-theme .nav-item {
+  color: var(--muted);
+}
+.dark-theme .nav-item:hover {
+  background: var(--accent);
+  color: #fff !important;
+}
+
+/* Topbar */
+.dark-theme .topbar {
+  background: #2c2c3e;
+  color: var(--text);
+  border-bottom: 1px solid #444;
+}
+.dark-theme .search input {
+  background: #3a3a4f;
+  color: var(--text);
+  border: 1px solid #555;
+}
+.dark-theme .top-actions i {
+  color: var(--accent);
+}
+
+/* Admin Profile */
+.dark-theme .admin-profile span {
+  color: var(--text);
+}
+
+/* Main content */
+.dark-theme .main {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Page headers and cards */
+.dark-theme .page-header {
+  background: rgba(239,108,0,0.08);
+  color: var(--text);
+}
+.dark-theme .settings-section {
+  background: var(--panel);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+/* Inputs and selects */
+.dark-theme input,
+.dark-theme select {
+  background: #3a3a4f;
+  color: var(--text);
+  border: 1px solid #555;
+}
+
+.dark-theme input[type="range"]::-webkit-slider-thumb {
+  background: var(--accent);
+}
+
+.dark-theme input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+.settings-section h3 {
+  margin-top: 25px;
+  font-size: 20px;
+  color: var(--accent);
+}
+
+.notif-types {
+  display: flex;
+  gap: 20px;
+  margin-top: 5px;
+}
+
+.notif-types label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#notif-test-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+#notif-test-btn:hover {
+  opacity: .8;
+}
+/* ===== Profile Button ===== */
+/* ===== Profile Button ===== */
+.admin-profile {
+  position: absolute; /* تغيير من relative إلى absolute لتثبيت الموقع */
+  top: 12px; /* يمكنك تعديل المسافة من الأعلى */
+  right: 20px; /* وضعه في الجانب الأيمن */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  z-index: 300; /* تأكد أن يظهر فوق باقي العناصر */
+}
+
+.admin-profile img {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+}
+
+/* ===== Profile Menu ===== */
+.profile-menu {
+  position: absolute;
+  top: 55px; /* أسفل الصورة مباشرة */
+  right: 0; /* على الجانب الأيمن بالنسبة للبروفايل */
+  width: 230px;
+  background: var(--panel);
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  padding: 12px;
+  display: none;
+  animation: fadeIn 0.2s ease;
+  z-index: 200;
+}
+
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-5px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* Profile info inside menu */
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.profile-info img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+.profile-info h4 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.profile-info p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Menu items */
+.profile-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 5px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.profile-item:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.logout {
+  color: #ff3b30;
+}
+.orders-table th, .orders-table td {
+  color: var(--text);
+  border-bottom: 1px dashed #555; /* أو استخدم rgba */
+}
+
+.badge {
+  color: var(--text);
+}
+
+.circle .number {
+  color: var(--text);
+}
+.dark-theme .status-pending { background:#444; color: var(--accent-2); }
+.dark-theme .status-preparing { background:#555; color: #ffb74d; }
+.dark-theme .status-onway { background:#2c3e50; color: var(--accent-2); }
+.dark-theme .status-delivered { background:#1e3e2f; color: var(--accent-2); }
+.dark-theme .status-canceled { background:#5c1f1f; color: #ff6b00; }
+.dark-theme .btn {
+  background-color: var(--accent);
+  color: #fff;
+}
+.dark-theme .btn.ghost {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.dark-theme {
+  --text: #ffffff;
+}
+.card {
+  color: var(--text);
+}
+
+.card-title,
+.card-sub,
+.card-value {
+  color: var(--text);
+}
+.dark-theme .card,
+.dark-theme .panel {
+  background: #2c2c3e !important;
+  color: var(--text) !important;
+}
+
+.dark-theme .card-title,
+.dark-theme .card-sub,
+.dark-theme .card-value {
+  color: var(--text) !important;
+}
+
+.dark-theme .status.pending {
+  background: #4a3a1a;
+  color: #ffca80;
+}
+.dark-theme .status.done {
+  background: #234a23;
+  color: #8cff8f;
+}
+.dark-theme .status.deliver {
+  background: #1e3a5f;
+  color: #80c3ff;
+}

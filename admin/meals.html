@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title data-i18n="menu_meals">Meals</title>
+
+  <link rel="stylesheet" href="assets/css/admin-base.css">
+  <link rel="stylesheet" href="meal.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="logo.png" alt="logo"/>
+      </div>
+      <nav class="nav">
+        <a class="nav-item active" href="t.html"><i class="fas fa-tachometer-alt"></i> <span data-i18n="menu_dashboard">Dashboard</span></a>
+        <a class="nav-item" href="orders.html"><i class="fas fa-receipt"></i> <span data-i18n="menu_orders">Orders</span></a>
+        <a class="nav-item" href="#"><i class="fas fa-utensils"></i> <span data-i18n="menu_meals">Meals</span></a>
+        <a class="nav-item" href="reservations.html"><i class="fas fa-calendar-check"></i> <span data-i18n="menu_reservations">Reservations</span></a>
+        <a class="nav-item" href="Customers.html"><i class="fas fa-users"></i> <span data-i18n="menu_customers">Customers</span></a>
+        <a class="nav-item" href="settings.html"><i class="fas fa-cog"></i> <span data-i18n="menu_settings">Settings</span></a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+        <header class="topbar">
+        <div class="search">
+          <input placeholder="Search for an order or meal..." data-i18n-placeholder="search_placeholder"/>
+        </div>
+
+        <div class="top-actions">
+          <i class="fas fa-bell" data-i18n="notifications_icon"></i>
+          <i class="fas fa-envelope" data-i18n="messages_icon"></i>
+          <i class="fas fa-heart" data-i18n="favorites_icon"></i>
+        </div>
+
+        <!-- ===== Admin Profile with Dropdown ===== -->
+        <div class="admin-profile" id="profile-btn">
+          <img src="admin.jpg" alt="Admin">
+          <span id="admin-name-top">Sarah Azouz</span>
+
+          <!-- ---------- Profile Menu ---------- -->
+          <div class="profile-menu" id="profile-menu">
+            <div class="profile-info">
+              <img src="admin.jpg" id="profile-menu-img">
+              <div>
+                <h4 id="menu_admin_name">Sarah Azouz</h4>
+                <p id="menu_admin_email">admin@mail.com</p>
+              </div>
+            </div>
+
+            <a href="settings.html" class="profile-item">
+              <i class="fas fa-user-cog"></i>
+              <span id="menu_settings" data-i18n="profile_settings">Profile Settings</span>
+            </a>
+
+            <a href="#" class="profile-item">
+              <i class="fas fa-bell"></i>
+              <span id="menu_notifications" data-i18n="notifications">Notifications</span>
+            </a>
+
+            <a href="#" class="profile-item logout">
+              <i class="fas fa-sign-out-alt"></i>
+              <span id="menu_logout" data-i18n="logout">Logout</span>
+            </a>
+          </div>
+        </div>
+      </header>
+      <!-- Page Header -->
+      <div class="page-header">
+        <h2 data-i18n="menu_meals">Restaurant Meals</h2>
+        <nav class="breadcrumb">
+          <span data-i18n="crumb_home">Home</span> / <span data-i18n="menu_meals">Meals</span>
+        </nav>
+      </div>
+
+      <!-- Meals Section -->
+      <section class="content meals-section">
+        <div class="actions">
+          <button id="addMealBtn" class="btn-primary" data-i18n="btn_add_meal">+ Add New Meal</button>
+          <input type="text" id="searchMeal" placeholder="Search meal..." data-i18n="search_placeholder">
+        </div>
+
+        <table id="mealsTable">
+          <thead>
+            <tr>
+              <th data-i18n="th_image">Image</th>
+              <th data-i18n="th_name">Name</th>
+              <th data-i18n="th_category">Category</th>
+              <th data-i18n="th_availability">Availability</th>
+              <th data-i18n="th_price">Price</th>
+              <th data-i18n="th_description">Description</th>
+              <th data-i18n="th_actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal Add/Edit Meal -->
+  <div id="mealModal" class="modal">
+    <div class="modal-content">
+          <span class="close">&times;</span>
+          <h3 id="modalTitle">Add Meal</h3>
+          <form id="mealForm">
+              <label for="name">Meal Name</label>
+              <input type="text" name="name" id="name" placeholder="Enter meal name" required>
+
+              <label for="description">Description</label>
+              <textarea name="description" id="description" placeholder="Enter description"></textarea>
+
+              <label for="price">Price</label>
+              <input type="number" name="price" id="price" placeholder="Enter price" required>
+
+              <label for="categorySelect">Category</label>
+              <select id="categorySelect" name="category_id" required>
+                      <!-- الخيارات سيتم تحميلها من API -->
+              </select>
+
+              <label for="meal_time">Meal Time</label>
+                 <select name="meal_time" id="meal_time" required>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                    <option value="Always">Always</option>
+
+               </select>
+
+
+
+              <label for="image">Image</label>
+              <input type="file" name="image" id="image">
+
+              <button type="submit">Save Meal</button>
+           </form>
+   </div>
+ </div>
+
+
+  <!-- Scripts -->
+  <script src="translations.js"></script>
+
+  <script src="setting.js" defer></script>
+  <script src="meal.js"></script>
+
+ 
+
+  
+</body>
+</html>

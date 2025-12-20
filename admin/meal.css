@@ -1,0 +1,166 @@
+
+
+/* ===== Meals Table ===== */
+.meals-section {
+    background: var(--panel);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.actions .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.actions .btn-primary:hover {
+    background: var(--accent-2);
+}
+
+#mealsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#mealsTable th,
+#mealsTable td {
+    border: 1px solid #eee;
+    padding: 10px;
+    text-align: left;
+}
+
+#mealsTable th {
+    background: var(--accent);
+    color: #fff;
+}
+
+#mealsTable img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+#mealsTable button {
+    padding: 5px 10px;
+    margin: 0 2px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: none;
+}
+
+#mealsTable button:hover {
+    opacity: 0.8;
+}
+
+#mealsTable button.edit {
+    background: #4caf50;
+    color: #fff;
+}
+
+#mealsTable button.delete {
+    background: #f44336;
+    color: #fff;
+}
+
+/* ===== Modal ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background: var(--panel);
+    margin: 5% auto;
+    padding: 25px 20px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-content .close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+/* ===== Inputs, Textarea, Select inside Meal Modal ===== */
+#mealModal input,
+#mealModal textarea,
+#mealModal select {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-top: 5px !important;
+    border: 1px solid #fefbfb !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    color: #333 !important; /* <-- أضف هذا */
+
+    font-size: 14px;
+    box-sizing: border-box !important;
+}
+
+/* Labels inside Meal Modal */
+#mealModal label {
+    display: block !important;
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
+    color: var(--muted);
+}
+
+/* Modal buttons */
+#mealModal button {
+    margin-top: 15px !important;
+    padding: 10px 15px !important;
+    border-radius: 6px !important;
+    border: none !important;
+    cursor: pointer !important;
+    background: var(--accent) !important;
+    color: #302d2d !important;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+#mealModal button:hover {
+    background: var(--accent-2) !important;
+}
+
+/* Responsive for small screens */
+@media (max-width: 500px) {
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+}

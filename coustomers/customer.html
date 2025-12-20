@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Management System — Professional Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    
+    <header>
+         <div class="brand">
+                  <div class="logo">
+                         <img src="logo.jpg" alt="logo"/>
+                  </div>
+                  <div>
+                       <div style="font-size:18px; font-weight:700;">Smart Restaurant</div>
+                  </div>
+         </div>
+
+
+        <div class="controls">
+
+         
+            <div class="profile-bar" id="guestControls">
+                <button class="nav-btn btn secondary small" onclick="showSection('login')">Login</button>
+                <button class="nav-btn btn secondary small" onclick="showSection('register')">Register</button>
+            </div>
+
+            <!-- Logged-in User -->
+            <div class="profile-bar hidden" id="userControls">
+                <div class="avatar" id="userAvatar">U</div>
+                <div id="welcomeName">
+                    <div id="userHello" style="font-weight:700;">Welcome, Guest</div>
+                    <div id="userEmailSmall" style="font-size:12px; opacity:0.85;"></div>
+                </div>
+
+                <div style="margin-left:8px;" class="nav-buttons">
+                    <button onclick="showSection('menu')" class="active">Meals Management</button>
+                    <button onclick="showSection('orders')">Orders</button>
+                    <button onclick="showSection('ai')">AI</button>
+                </div>
+
+                <button class="btn small" onclick="logout()" style="margin-left:10px;">Logout</button>
+                <!-- Settings Icon -->
+                <button class="icon-btn" onclick="openSettings()" style="margin-left:10px;">
+                   setting
+              </button>
+
+
+            </div>
+        </div>
+        
+    </header>
+ 
+    <main>
+     
+
+        <!-- MENU -->
+        <section id="menu" class="section active">
+            <h2>Meals Management</h2>
+
+            <div class="controls-inline">
+                <div class="category-buttons" role="tablist">
+                    
+                </div>
+
+                <div class="sub-buttons" style="margin-left:auto;">
+                  <button data-meal-time="all" class="active">All</button>
+                  <button data-meal-time="Lunch">Lunch</button>
+                  <button data-meal-time="Dinner">Dinner</button>
+
+                </div>
+            </div>
+
+            <div class="menu-grid" id="menuGrid"></div>
+        </section>
+
+        <!-- ORDERS -->
+        <section id="orders" class="section">
+            <h2>Orders Management</h2>
+
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <button class="btn" onclick="showOrderForm()">Add New Order</button>
+                <div id="ordersSummary" style="margin-left:auto;">
+                    <span>Total Orders: <strong id="totalOrders">0</strong></span>
+                </div>
+            </div>
+               <button class="btn" onclick="confirmAllOrders()">Confirm All Orders</button>
+
+            <div id="orderForm" style="display:none; margin-top:16px;">
+                <h3>Add Order</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Client (Optional — auto-filled if logged in)</label>
+                        <input type="text" id="orderClientName" placeholder="Client name">
+                    </div>
+                    <div class="form-group">
+                        <label>Meal</label>
+                        <select id="orderMeal">
+                            <option value="">Select a meal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="orderQuantity" min="1" value="1">
+                    </div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn" onclick="addOrder()">Save Order</button>
+                    <button class="btn secondary" onclick="toggleOrderForm(false)">Cancel</button>
+                </div>
+            </div>
+
+            <h3 style="margin-top:18px;">Orders List</h3>
+            <ul class="list" id="ordersList"></ul>
+        </section>
+
+        <!-- CLIENTS -->
+        <section id="clients" class="section">
+            <h2>Clients Management</h2>
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <button class="btn" onclick="showClientForm()">Add New Client</button>
+                <div style="margin-left:auto;">
+                    <span>Total Clients: <strong id="totalClients">0</strong></span>
+                </div>
+            </div>
+
+            <div id="clientForm" style="display:none; margin-top:16px;">
+                <h3>Add Client</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="clientName">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="clientPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="clientEmail">
+                    </div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn" onclick="addClient()">Add Client</button>
+                    <button class="btn secondary" onclick="toggleClientForm(false)">Cancel</button>
+                </div>
+            </div>
+
+            <h3 style="margin-top:14px;">Clients List</h3>
+            <ul class="list" id="clientsList"></ul>
+        </section>
+
+        <!-- STATS -->
+        <section id="stats" class="section">
+            <h2>Statistics</h2>
+            <p>Total Orders: <span id="statTotalOrders">0</span></p>
+            <p>Total Clients: <span id="statTotalClients">0</span></p>
+            <p>Most Ordered Meal: <span id="topMeal">-</span></p>
+        </section>
+         <!-- AI Section داخل الصفحة -->
+                        <section id="ai" class="section">
+                             <h2>AI – توصيات الذكاء الاصطناعي</h2>
+                                   <div id="ai-box">
+                                        <h3>التوصيات</h3>
+                                         <div id="aiSuggestions" class="meal-container">
+                                             <p>Loading suggestions...</p>
+                                         </div>
+                                    </div>
+                         </section>
+
+        <!-- AI -->
+       
+        <!-- LOGIN -->
+        <section id="login" class="section">
+            <h2>Login</h2>
+            <div class="auth-grid">
+                <div class="auth-card">
+                    <h3>Login</h3>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="********">
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:12px;">
+                        <button class="btn" onclick="loginUser()">Login</button>
+                        <button class="btn secondary" onclick="showSection('register')">Create New Account</button>
+                    </div>
+                    <p id="loginMessage" style="margin-top:12px; color:#ff8a80;"></p>
+                </div>
+
+                <div class="auth-card">
+                    <h3>Demo Account</h3>
+                    <p>You can try the following demo account:</p>
+                    <ul style="margin-top:8px; color:#ccc;">
+                        <li>Email: <strong>customer@gmail.com</strong></li>
+                        <li>Password: <strong>123456</strong></li>
+                    </ul>
+                    <div style="margin-top:12px;">
+                        <button class="btn small" onclick="prefillDemo()">Fill Demo Account</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REGISTER -->
+        <section id="register" class="section">
+            <h2>Create New Account</h2>
+            <div class="auth-grid">
+                <div class="auth-card">
+                    <h3>Account Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="regFullName" placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="regUsername" placeholder="username">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="regEmail" placeholder="email@example.com">
+                        </div>
+                               <div class="form-group">
+                                 <label>Address (Optional)</label>
+                                 <input type="text" id="regAddress" placeholder="Your address">
+                               </div>
+
+                        <div class="form-group">
+                            <label>Phone (Optional)</label>
+                            <input type="text" id="regPhone" placeholder="0550xxxxxx">
+                        </div>
+                    </div>
+                     <div class="form-row">
+                                 <div class="form-group">
+                                      <label>Age</label>
+                                      <input type="number" id="regAge" min="1" max="120" placeholder="Age">
+                                 </div>
+                                     <div class="form-group">
+                                          <label>Health Condition (Optional)</label>
+                                          <input type="text" id="regHealth" placeholder="e.g. diabetic">
+                                     </div>
+                         </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="regPassword" placeholder="********">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" id="regPassword2" placeholder="********">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="btn" onclick="registerUser()">Create Account</button>
+                        <button class="btn secondary" onclick="showSection('login')">I Already Have an Account</button>
+                    </div>
+                    <p id="registerMessage" style="margin-top:12px;"></p>
+                </div>
+
+                <div class="auth-card">
+                    <h3>Why Register?</h3>
+                    <p style="color:#ccc;">By registering, you get a faster ordering experience, save your preferences, and track previous orders.</p>
+                    <p style="color:#ccc;">Note: This is a local testing system. For production, use a server and better security standards.</p>
+                </div>
+            </div>
+        </section>
+          <!-- Order Modal -->
+          <!-- Order Modal -->
+   <div id="orderModal" class="modal hidden">
+       <div class="modal-card">
+                  <h3>تفاصيل الطلب</h3>
+
+                   <div class="form-group">
+                     <label>نوع الطلب</label>
+                         <select id="orderType">
+                             <option value="dinein">تناول داخل المطعم</option>
+                             <option value="delivery">توصيل للمنزل</option>
+                          </select>
+                    </div>
+
+        <!-- اختيار الطاولة -->
+                 <div class="form-group" id="tableSelectGroup">
+                      <label>اختر الطاولة</label>
+                     <select id="tableSelect">
+                           <option>Table 1 — 4 chairs</option>
+                           <option>Table 2 — 2 chairs</option>
+                      </select>
+                  </div>
+
+        <!-- وقت الحجز (مهم للتحقق من صلاحية الحجز) -->
+                  <div class="form-group" id="reservationTimeGroup">
+                        <label>وقت الحجز</label>
+                        <input type="datetime-local" id="reservationTime">
+                 </div>
+
+        <!-- عنوان التوصيل -->
+                 <div class="form-group hidden" id="addressGroup">
+                     <label>عنوان التوصيل</label>
+                     <input type="text" id="deliveryAddress" placeholder="اكتب العنوان">
+                 </div>
+
+        <!-- الكمية -->
+                 <div class="form-group">
+                      <label>الكمية</label>
+                      <input type="number" id="orderQuantityModal" value="1" min="1">
+                 </div>
+
+        <!-- أزرار الإضافة والإلغاء -->
+                 <div style="display:flex; gap:10px; margin-top:12px;">
+                      <button class="btn" id="confirmOrderBtn">إضافة إلى السلة</button>
+                      <button class="btn secondary" onclick="closeOrderModal()">إلغاء</button>
+                 </div>
+      </div>
+   </div>
+
+</main>
+<!-- SETTINGS MODAL -->
+                   <!-- SETTINGS MODAL -->
+          <div id="settingsModal" class="modal hidden">
+              <div class="modal-card">
+                   <h3> Account Settings</h3>
+
+                 <div class="form-group">
+                     <label>Full Name</label>
+                     <input type="text" id="setName">
+                  </div>
+
+                  <div class="form-group">
+                     <label>Email</label>
+                     <input type="email" id="setEmail" disabled>
+                  </div>
+
+                 <div class="form-group">
+                     <label>Phone</label>
+                     <input type="text" id="setPhone">
+                 </div>
+
+                 <div class="form-group">
+                       <label>Address</label>
+                       <input type="text" id="setAddress">
+                 </div>
+
+                     <div class="form-group">
+                         <label>Health Condition</label>
+                         <input type="text" id="setHealth">
+                     </div>
+
+                     <div style="display:flex; gap:10px; margin-top:12px;">
+                           <button class="btn" onclick="saveSettings()">Save</button>
+                           <button class="btn secondary" onclick="closeSettings()">Cancel</button>
+                       </div>
+              </div>
+                   <div class="form-group">
+                     <label>Profile Image</label>
+                     <input type="file" id="setProfileImage" accept="image/*">
+                     <img id="profilePreview" src="placeholder.png" alt="Profile Preview" style="width:80px;height:80px;border-radius:50%;margin-top:6px;">
+                 </div>
+
+         </div>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>
