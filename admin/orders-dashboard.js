@@ -202,7 +202,7 @@ function applyFiltersAndRender(){
 // ---------- Load reference data & orders ----------
 async function loadCustomers(){
   try{
-    const res = await fetch("http://localhost:5000/api/customers");
+    const res = await fetch("https://smart-restorant.onrender.com/api/customers");
     customers = await res.json();
     buildCustomerOptions();
   }catch(err){ console.error("loadCustomers:", err); }
@@ -210,7 +210,7 @@ async function loadCustomers(){
 
 async function loadMeals(){
   try{
-    const res = await fetch("http://localhost:5000/api/meals");
+    const res = await fetch("https://smart-restorant.onrender.com/api/meals");
     meals = await res.json();
     buildMealOptions();
   }catch(err){ console.error("loadMeals:", err); }
@@ -218,7 +218,7 @@ async function loadMeals(){
 
 async function loadOrders(){
   try{
-    const res = await fetch("http://localhost:5000/api/orders");
+    const res = await fetch("https://smart-restorant.onrender.com/api/orders");
     const data = await res.json();
 
     orders = data.map(o => ({
@@ -316,7 +316,7 @@ async function saveOrderFromForm(e){
     let res, json;
     if(orderIdInput && orderIdInput.value){
       const id = orderIdInput.value;
-      res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+      res = await fetch(`https://smart-restorant.onrender.com/api/orders/${id}`, {
         method: "PUT",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(payload)
@@ -338,7 +338,7 @@ async function saveOrderFromForm(e){
         };
       }
     } else {
-      res = await fetch("http://localhost:5000/api/orders", {
+      res = await fetch("https://smart-restorant.onrender.com/api/orders", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(payload)
@@ -431,7 +431,7 @@ async function openStatusMenu(id) {
     const next = select.value;
     if (["pending","preparing","onway","delivered","canceled"].includes(next)) {
       try {
-        const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+        const res = await fetch(`https://smart-restorant.onrender.com/api/orders/${id}`, {
           method: "PUT",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({ status: next })

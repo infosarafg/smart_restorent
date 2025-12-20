@@ -5,7 +5,7 @@ const tablesGrid = document.getElementById('tables-grid');
 const addTableBtn = document.getElementById('add-table-btn');
 const tableMsg = document.getElementById('table-msg');
 
-const API_BASE = "http://127.0.0.1:5000/api";
+const API_BASE = "https://smart-restorant.onrender.com/api";
 
 // --------------------------
 // جلب الطاولات من السيرفر

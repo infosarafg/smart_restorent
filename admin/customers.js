@@ -9,7 +9,7 @@ let customers = [];
 async function loadCustomers() {
   try {
     // تحديث المنفذ إلى 5000
-    const res = await fetch("http://localhost:5000/api/customers-with-orders");
+    const res = await fetch("https://smart-restorant.onrender.com/api/customers-with-orders");
     customers = await res.json();
     renderCustomers();
   } catch (err) {

@@ -1,8 +1,8 @@
 // ---------- app.js (Final & Fixed) ----------
 
 // Default API URLs
-const API_URL = "http://127.0.0.1:5000/api";
-const UPLOADS_URL = "http://127.0.0.1:5000/uploads";
+const API_URL = "https://smart-restorant.onrender.com/api";
+const UPLOADS_URL = "https://smart-restorant.onrender.com/uploads";
 
 // ---------- Shortcuts ----------
 const q = sel => document.querySelector(sel);
@@ -516,7 +516,7 @@ async function loadAISuggestions() {
     const user = JSON.parse(userStr);
     const customerId = user.customer_id || 1;
 
-    const apiUrl = `http://127.0.0.1:5000/api/ai/recommend/${customerId}`;
+    const apiUrl = `https://smart-restorant.onrender.com/api/ai/recommend/${customerId}`;
 
     try {
         const res = await fetch(apiUrl);
@@ -537,7 +537,7 @@ async function loadAISuggestions() {
             const card = document.createElement('div');
             card.className = 'meal-card';
             card.innerHTML = `
-                <img src="${meal.image_url ? 'http://127.0.0.1:5000' + meal.image_url : '/placeholder.png'}">
+                <img src="${meal.image_url ? 'https://smart-restorant.onrender.com' + meal.image_url : '/placeholder.png'}">
                 <h3>${meal.name}</h3>
                 <p>${meal.description || ''}</p>
                 <p>السعر: ${meal.price} DZD</p>

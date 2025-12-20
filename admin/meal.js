@@ -32,7 +32,7 @@ window.addEventListener('click', e => {
 // ------------------ Load Categories ------------------
 async function loadCategories() {
   try {
-    const res = await fetch("http://localhost:5000/api/meal-categories");
+    const res = await fetch("https://smart-restorant.onrender.com/api/meal-categories");
     categories = await res.json();
     categorySelect.innerHTML = categories
       .map(cat => `<option value="${cat.category_id}">${cat.category_name}</option>`)
@@ -46,7 +46,7 @@ loadCategories();
 // ------------------ Load Meals ------------------
 async function loadMeals() {
   try {
-    const res = await fetch("http://localhost:5000/api/meals");
+    const res = await fetch("https://smart-restorant.onrender.com/api/meals");
     meals = await res.json();
     renderMeals();
   } catch (err) {
@@ -60,7 +60,7 @@ function renderMeals(list = meals) {
   mealsTableBody.innerHTML = '';
   list.forEach((meal, index) => {
     const categoryName = meal.category_name || '';
-    const imageUrl = meal.image_url ? `http://localhost:5000${meal.image_url}` : 'default.png';
+    const imageUrl = meal.image_url ? `https://smart-restorant.onrender.com/api${meal.image_url}` : 'default.png';
     const row = document.createElement('tr');
     row.innerHTML = `
       <td><img src="${imageUrl}" width="60" height="60" style="object-fit:cover;border-radius:8px;"></td>
@@ -97,7 +97,7 @@ mealForm.addEventListener('submit', async e => {
     formData.delete('image');
   }
 
-  let url = "http://localhost:5000/api/meals";
+  let url = "https://smart-restorant.onrender.com/api/meals";
   let method = "POST";
 
   if (editIndex !== null) {
@@ -161,7 +161,7 @@ async function deleteMeal(index) {
   if (!confirm("Are you sure you want to delete this meal?")) return;
   try {
     const mealId = meals[index].meal_id;
-    await fetch(`http://localhost:5000/api/meals/${mealId}`, { method: "DELETE" });
+    await fetch(`https://smart-restorant.onrender.com/api/meals/${mealId}`, { method: "DELETE" });
     meals.splice(index, 1);
     renderMeals();
   } catch (err) {
@@ -192,7 +192,7 @@ categoryForm.addEventListener('submit', async e => {
   if (!categoryName) return alert("Enter category name.");
 
   try {
-    const res = await fetch("http://localhost:5000/api/meal-categories", {
+    const res = await fetch("https://smart-restorant.onrender.com/api/meal-categories", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ category_name: categoryName })

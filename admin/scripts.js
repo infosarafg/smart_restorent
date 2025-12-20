@@ -4,7 +4,7 @@
 
 async function fetchOrders() {
   try {
-    const res = await fetch('http://localhost:5000/api/orders');
+    const res = await fetch('https://smart-restorant.onrender.com/api/orders');
     if (!res.ok) throw new Error('Failed to fetch orders');
     return await res.json(); // [{order_id, customer_name, meal_name, quantity, price, total, status, order_datetime, phone?, address?}, ...]
   } catch (err) {
@@ -15,7 +15,7 @@ async function fetchOrders() {
 
 async function fetchReviews() {
   try {
-    const res = await fetch('http://localhost:5000/api/reviews');
+    const res = await fetch('https://smart-restorant.onrender.com/api/reviews');
     if (!res.ok) throw new Error('Failed to fetch reviews');
     return await res.json(); // [{user, text}, ...]
   } catch (err) {
