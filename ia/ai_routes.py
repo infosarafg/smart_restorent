@@ -7,7 +7,7 @@ from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 ai_bp = Blueprint('ai', __name__, url_prefix='/api/ai')
 
 engine = create_engine(
-    'postgresql+psycopg2://postgres:sara@localhost/restaurant_db'
+    'postgresql+psycopg2://postgres:5UZsYZe5Mvfl9EkEEjjt49WnPe7h2OsM@localhost/project_jwza'
 )
 
 # =====================================================

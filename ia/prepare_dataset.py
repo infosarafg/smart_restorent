@@ -8,10 +8,10 @@ import psycopg2
 # 1️⃣ الاتصال بقاعدة البيانات
 # -----------------------------
 conn = psycopg2.connect(
-    host="localhost",
-    database="restaurant_db",
-    user="postgres",
-    password="yourpassword"
+ user="project_jwza_user",
+ host="localhost",
+ database="project_jwza",
+ password="5UZsYZe5Mvfl9EkEEjjt49WnPe7h2OsM",
 )
 
 customers = pd.read_sql("SELECT * FROM customers", conn)

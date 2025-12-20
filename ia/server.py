@@ -42,10 +42,10 @@ def uploaded_file(filename):
 # ----- Database connection -----
 def get_db_connection():
     return psycopg2.connect(
-        user="postgres",
+        user="project_jwza_user",
         host="localhost",
-        database="restaurant_db",
-        password="sara",
+        database="project_jwza",
+        password="5UZsYZe5Mvfl9EkEEjjt49WnPe7h2OsM",
         port=5432,
         cursor_factory=RealDictCursor
     )
