@@ -42,13 +42,15 @@ def uploaded_file(filename):
 # ----- Database connection -----
 def get_db_connection():
     return psycopg2.connect(
-        user="project_jwza_user",
-        host="localhost",
-        database="project_jwza",
-        password="5UZsYZe5Mvfl9EkEEjjt49WnPe7h2OsM",
-        port=5432,
+        host=os.environ.get("DB_HOST"),
+        database=os.environ.get("DB_NAME"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
+        port=os.environ.get("DB_PORT", 5432),
         cursor_factory=RealDictCursor
+
     )
+
 
 # ------------------ API Meals ------------------
 @app.route('/api/meals', methods=['GET'])
