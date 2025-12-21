@@ -647,6 +647,12 @@ def get_available_tables():
     except Exception as e:
         print(f"GET /api/available-tables: {e}")
         return jsonify({"error": "Server error"}), 500
+@app.route("/")
+def home():
+    return {
+        "status": "Backend is running",
+        "message": "Smart Restaurant API works"
+    }
 
 # ----- Run server -----
 if __name__ == '__main__':
