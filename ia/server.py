@@ -11,7 +11,7 @@ from ai_routes import ai_bp  # استيراد Blueprint
 import subprocess
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["https://infosarafg.github.io"])
 app.register_blueprint(ai_bp)
 
 # ----- إعدادات أساسية -----
