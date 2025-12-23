@@ -92,9 +92,4 @@ def recommend_meals(customer_id, top_n=5):
     
     return recommended[['name','category_id','meal_time','price','description']]
 
-# -----------------------------
-# 7️⃣ تجربة التوصية
-# -----------------------------
-customer_id = 1  # مثال: Sara Azouz
-recommendations = recommend_meals(customer_id)
-print(recommendations)
+
