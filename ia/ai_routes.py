@@ -4,10 +4,11 @@ import numpy as np
 from sqlalchemy import create_engine
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
+
 ai_bp = Blueprint('ai', __name__, url_prefix='/api/ai')
 
 engine = create_engine(
-    'postgresql+psycopg2://postgres:5UZsYZe5Mvfl9EkEEjjt49WnPe7h2OsM@localhost/project_jwza'
+        f"postgresql+psycopg2://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@{os.environ['DB_HOST']}:{os.environ['DB_PORT']}/{os.environ['DB_NAME']}"
 )
 
 # =====================================================
