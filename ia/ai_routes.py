@@ -8,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 ai_bp = Blueprint('ai', __name__, url_prefix='/api/ai')
 
 engine = create_engine(
-        f"postgresql+psycopg2://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@{os.environ['DB_HOST']}:{os.environ['DB_PORT']}/{os.environ['DB_NAME']}"
+    'postgresql+psycopg2://postgres:5UZsYZe5Mvfl9EkEEjjt49WnPe7h2OsM@dpg-d53hnfe3jp1c738lr0r0-a/project_jwza'
 )
 
 # =====================================================
