@@ -2,11 +2,13 @@
 
 // Default API URLs
 const API_URL = "https://smart-restorent-1.onrender.com/api";
-const UPLOADS_URL = "https://smart-restorent-1.onrender.com/uploads";
+const UPLOADS_URL = "https://smart-restorent-1.onrender.com/api/uploads";
 
 // ---------- Shortcuts ----------
 const q = sel => document.querySelector(sel);
 const qAll = sel => Array.from(document.querySelectorAll(sel));
+const health = q('#regHealth')?.value?.trim() || '';
+
 let cart = [];
 let selectedMealForOrder = null;
 // ---------- State ----------
@@ -17,6 +19,7 @@ let state = {
     currentCategory: 'all',
     currentMealTime: 'all',
     searchKeyword: ''
+
 };
 
 // ---------- Utils ----------
@@ -79,7 +82,7 @@ async function loadAvailableTables() {
         tableSelect.innerHTML = '';
 
         if (!Array.isArray(tables) || tables.length === 0) {
-            tableSelect.innerHTML = '<option>No available tables</option>';
+            tableSelect.innerHTML = '<option value="">No available tables</option>';
             return;
         }
 
@@ -97,10 +100,11 @@ async function loadAvailableTables() {
 }
 
 
+
   
 
 // فتح المودال للطلب
-function openOrderModal(meal) {
+async function openOrderModal(meal) {
     selectedMealForOrder = meal;
     document.getElementById('orderModal').classList.remove('hidden');
 
@@ -108,14 +112,21 @@ function openOrderModal(meal) {
     toggleOrderTypeFields(orderType.value);
 
     orderType.onchange = (e) => toggleOrderTypeFields(e.target.value);
+
+    // ✅ تحميل الطاولات المتاحة
+    await loadAvailableTables();
 }
+
 
 // تبديل الحقول بناءً على نوع الطلب
 function toggleOrderTypeFields(type) {
-    document.getElementById('tableSelectGroup').classList.toggle('hidden', type === 'delivery');
-    document.getElementById('reservationTimeGroup').classList.toggle('hidden', type === 'delivery');
-    document.getElementById('addressGroup').classList.toggle('hidden', type === 'dinein');
+    document.getElementById('tableSelectGroup')
+        .classList.toggle('hidden', type === 'delivery');
+
+    document.getElementById('addressGroup')
+        .classList.toggle('hidden', type === 'dinein');
 }
+
 
 // إغلاق المودال
 function closeOrderModal() {
@@ -128,59 +139,30 @@ document.getElementById('confirmOrderBtn').addEventListener('click', () => {
     const quantity = parseInt(document.getElementById('orderQuantityModal').value) || 1;
     const table_id = document.getElementById('tableSelect').value;
     const address = document.getElementById('deliveryAddress').value.trim();
-    const reservationTime = document.getElementById('reservationTime').value;
 
-    // التحقق من وقت الحجز
-    if (type === 'dinein') {
-        if (!reservationTime) {
-            alert('يرجى اختيار وقت الحجز');
-            return;
-        }
-        const now = new Date();
-        const selectedTime = new Date(reservationTime);
-        if (selectedTime < now) {
-            alert('⚠️ وقت الحجز قد مضى، يرجى اختيار وقت صالح');
-            return;
-        }
-    }
-
+    
     // إضافة الطلب إلى السلة
-    cart.push({
-        meal_id: selectedMealForOrder.meal_id,
-        meal_name: selectedMealForOrder.name,
-        price: selectedMealForOrder.price,
-        quantity,
-        type,
-        table_id: type === 'dinein' ? table_id : null,
-        address: type === 'delivery' ? address : null,
-        reservationTime: type === 'dinein' ? reservationTime : null
-    });
+      if (type === 'dinein' && !table_id) {
+            alert("❌ Please select a table");
+            return;
+        }
+
+     cart.push({
+            meal_id: selectedMealForOrder.meal_id,
+            meal_name: selectedMealForOrder.name,
+            price: selectedMealForOrder.price,
+            quantity,
+            type,
+            table_id: type === 'dinein' ? parseInt(table_id) : null,
+            address: type === 'delivery' ? address : null
+       });
+
+
 
     renderCart();
     closeOrderModal();
 });
 
-// عرض الطلبات في الصفحة
-function renderCart() {
-    const ul = document.getElementById('ordersList');
-    ul.innerHTML = '';
-
-    cart.forEach((o, index) => {
-        ul.innerHTML += `
-            <li>
-                <strong>${o.meal_name}</strong> × ${o.quantity} <br>
-                ${o.type === 'dinein'
-                    ? `Table ${o.table_id} — الحجز عند ${new Date(o.reservationTime).toLocaleString()}`
-                    : `Delivery to ${o.address}`}
-                <br>
-                ${o.price * o.quantity} DZD
-                <button onclick="removeFromCart(${index})">❌</button>
-            </li>
-        `;
-    });
-
-    document.getElementById('totalOrders').textContent = cart.length;
-}
 
 // إزالة عنصر من السلة
 function removeFromCart(index) {
@@ -205,25 +187,27 @@ async function loadCategories() {
     }
 }
 function renderCart() {
-    const ul = q('#ordersList');
-    ul.innerHTML = '';
+  const ul = document.getElementById('ordersList');
+  ul.innerHTML = '';
 
-    cart.forEach((o, index) => {
-        ul.innerHTML += `
-            <li>
-                <strong>${o.meal_name}</strong> × ${o.quantity}
-                <br>
-                ${o.type === 'dinein'
-                    ? `Table ${o.table_id}`
-                    : `Delivery to ${o.address}`}
-                <br>
-                ${o.price * o.quantity} DZD
-                <button onclick="removeFromCart(${index})">❌</button>
-            </li>
-        `;
-    });
+  cart.forEach((o, index) => {
+    ul.innerHTML += `
+      <li>
+        <strong>${o.meal_name}</strong> × ${o.quantity}<br>
+        ${
+          o.type === 'dinein'
+                 ? `Table ${o.table_id} — Reserved`
+                 : `Delivery to ${o.address}`
 
-    q('#totalOrders').textContent = cart.length;
+        }
+        <br>
+        ${o.price * o.quantity} DZD
+        <button onclick="removeFromCart(${index})">❌</button>
+      </li>
+    `;
+  });
+
+  document.getElementById('totalOrders').textContent = cart.length;
 }
 
 async function loadMeals() {
@@ -595,56 +579,65 @@ async function deleteOrder(orderId) {
 
 
 async function confirmAllOrders() {
-    if (cart.length === 0) {
-        alert("Cart is empty");
-        return;
-    }
 
-    const user = JSON.parse(localStorage.getItem('loggedUser') || '{}');
+  const user = JSON.parse(localStorage.getItem("loggedUser"));
+  if (!user || !user.customer_id) {
+    alert("❌ Please login first");
+    return;
+  }
 
-    try {
-        for (const o of cart) {
-            await apiPost('/orders', JSON.stringify({
-                customer_id: user.customer_id,
-                meal_id: o.meal_id,
-                quantity: o.quantity,
-                price: o.price * o.quantity,
-                status: 'pending',
-                notes: o.type === 'dinein'
-                    ? `Dine-in Table ${o.table_id}`
-                    : `Delivery to ${o.address}`
-            }), { 'Content-Type': 'application/json' });
+  try {
+
+    // 1️⃣ حجز الطاولة مرة واحدة
+    const dineInOrder = cart.find(o => o.type === "dinein");
+    let reservationTime = null;
+
+    if (dineInOrder) {
+                const res = await apiPost(
+                  "/reservations",
+                   JSON.stringify({
+                      customer_id: user.customer_id,
+                        table_id: dineInOrder.table_id
+                   }),
+                     { "Content-Type": "application/json" }
+                 );
+
+            // ✅ التحويل الصحيح
+               reservationTime = new Date(res.reservation_datetime).toISOString();
+
         }
 
-        cart = [];
-        renderCart();
-        alert("✅ All orders confirmed successfully");
 
-    } catch (e) {
-        console.error(e);
-        alert("❌ Error confirming orders");
+    // 2️⃣ إرسال كل طلب بشكل منفصل (كما يتوقع Backend)
+    for (const o of cart) {
+
+      const payload = {
+        customer_id: user.customer_id,
+        meal_id: o.meal_id,                  // ✅ موجود
+        quantity: o.quantity,                // ✅ موجود
+        price: o.price,                      // ✅ موجود
+        order_type: o.type,
+        table_id: o.type === "dinein" ? o.table_id : null,
+        address: o.type === "delivery" ? o.address : null,
+        reservation_time: o.type === "dinein" ? reservationTime : null
+      };
+
+      await apiPost(
+        "/orders",
+        JSON.stringify(payload),
+        { "Content-Type": "application/json" }
+      );
     }
-}
 
-function removeFromCart(index) {
-    cart.splice(index, 1);
+    cart = [];
     renderCart();
+    alert("✅ Orders confirmed successfully");
+
+  } catch (e) {
+    console.error("Confirm order error:", e);
+    alert("❌ Error confirming orders");
+  }
 }
-
-
-function openSettings(){
-    const user = JSON.parse(localStorage.getItem("loggedUser"));
-    if(!user) return;
-
-    setName.value = user.first_name || "";
-    setEmail.value = user.email || "";
-    setPhone.value = user.phone || "";
-    setAddress.value = user.address || "";
-    setHealth.value = user.health || "";
-
-    settingsModal.classList.remove("hidden");
-}
-
 
 function closeSettings(){
     settingsModal.classList.add("hidden");

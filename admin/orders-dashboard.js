@@ -24,7 +24,7 @@ let customers = [];
 let meals = [];
 
 // ---------- DOM ----------
-const ordersBody = $qs(".orders-table tbody");
+const ordersBody = document.getElementById("ordersBody");
 const filterDate = $id("filterDate");
 const filterTimeFrom = $id("filterTimeFrom");
 const filterTimeTo = $id("filterTimeTo");
@@ -132,31 +132,41 @@ function attachRowListeners(){
 function renderOrdersTable(filtered){
   ordersBody.innerHTML = "";
   const data = filtered || orders;
+
   data.forEach(o=>{
     const tr = document.createElement("tr");
 
-    const mealDisplay = `${safe(o.meal_name)}${o.quantity ? " ×"+o.quantity : ""}`;
-    const phone = safe(o.phone) || "";
-    const address = safe(o.address) || "";
+    const mealDisplay = `${safe(o.meal_name)} × ${o.quantity}`;
+    const phone = safe(o.phone);
+    const address = safe(o.address);
+    const orderType = o.order_type === "dinein" ? "Dine In" : "Delivery";
+    const tableNumber = o.table_number ? o.table_number : "-";
 
-    tr.innerHTML=`
-      <td>${o.order_id}</td>
-      <td>${escapeHtml(safe(o.customer_name))}</td>
-      <td>${escapeHtml(phone)}</td>
-      <td>${escapeHtml(address)}</td>
-      <td>${escapeHtml(mealDisplay)}</td>
-      <td>${(o.total!=null) ? Number(o.total).toLocaleString("en-US") + " DZD" : ""}</td>
-      <td>${renderStatusBadge(o.status)}</td>
-      <td>${formatDateTimeForDisplay(o.order_datetime)}</td>
-      <td>
-        <button class="tbtn edit" data-id="${o.order_id}">Edit</button>
-        <button class="tbtn status" data-id="${o.order_id}">Status</button>
-      </td>
-    `;
+    tr.innerHTML = `
+            <td>${o.order_id}</td>
+            <td>${escapeHtml(o.customer_name)}</td>
+            <td>${escapeHtml(phone)}</td>
+            <td>${escapeHtml(address)}</td>
+            <td>${escapeHtml(mealDisplay)}</td>
+            <td>${Number(o.total).toLocaleString("en-US")} DZD</td>
+            <td>
+                 ${renderStatusBadge(o.status)}
+            </td>
+            <td>${formatDateTimeForDisplay(o.order_datetime)}</td>
+            <td>${orderType}</td>
+            <td>${tableNumber}</td>
+             <td>
+                <button class="tbtn edit" data-id="${o.order_id}">Edit</button>
+                <button class="tbtn status" data-id="${o.order_id}">Status</button>
+              </td>
+          `;
+
     ordersBody.appendChild(tr);
   });
+
   attachRowListeners();
 }
+
 
 // ---------- Filters ----------
 function applyFiltersAndRender(){
@@ -197,6 +207,8 @@ function applyFiltersAndRender(){
   renderOrdersTable(f);
   updateAllCircles(f);
   renderCharts(f);
+  updateStats(f);
+
 }
 
 // ---------- Load reference data & orders ----------
@@ -210,7 +222,7 @@ async function loadCustomers(){
 
 async function loadMeals(){
   try{
-    const res = await fetch("https://smart-restorent-1.onrender.com/api/meals");
+    const res = await fetch("hhttps://smart-restorent-1.onrender.com/api/meals");
     meals = await res.json();
     buildMealOptions();
   }catch(err){ console.error("loadMeals:", err); }
@@ -233,7 +245,10 @@ async function loadOrders(){
       status: safe(o.status),
       order_datetime: o.order_datetime || o.orderDatetime || o.datetime || null,
       phone: safe(o.phone),
-      address: safe(o.address)
+      address: safe(o.address),
+      order_type: o.order_type,
+      table_number: o.table_number
+
     }));
 
     applyFiltersAndRender();
@@ -316,7 +331,7 @@ async function saveOrderFromForm(e){
     let res, json;
     if(orderIdInput && orderIdInput.value){
       const id = orderIdInput.value;
-      res = await fetch(`https://smart-restorent-1.onrender.com/api/orders/${id}`, {
+      res = await fetch(`https://smart-restorent-1.onrender.com/api/orders${id}`, {
         method: "PUT",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(payload)
@@ -370,35 +385,26 @@ async function saveOrderFromForm(e){
 // ---------- Change status ----------
 async function openStatusMenu(id) {
   const o = orders.find(x => x.order_id == id);
-  if (!o) return;
+  if (!o) return alert("Order not found");
 
-  // إنشاء نافذة مؤقتة
+  // إنشاء مودال بسيط
   const modal = document.createElement("div");
-  modal.style.position = "fixed";
-  modal.style.top = 0;
-  modal.style.left = 0;
-  modal.style.width = "100%";
-  modal.style.height = "100%";
-  modal.style.backgroundColor = "rgba(0,0,0,0.5)";
-  modal.style.display = "flex";
-  modal.style.alignItems = "center";
-  modal.style.justifyContent = "center";
-  modal.style.zIndex = 9999;
+  modal.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;
+  `;
 
-  // محتوى النافذة
   const box = document.createElement("div");
-  box.style.background = "#fff";
-  box.style.padding = "20px";
-  box.style.borderRadius = "8px";
-  box.style.minWidth = "250px";
-  box.style.textAlign = "center";
+  box.style.cssText = `
+    background: #fff; padding: 20px; border-radius: 8px; min-width: 250px; text-align: center;
+  `;
 
   const msg = document.createElement("p");
   msg.textContent = "Select status for the order:";
 
   const select = document.createElement("select");
-  select.style.marginTop = "10px";
   select.style.width = "100%";
+  select.style.marginTop = "10px";
   select.innerHTML = `
     <option value="pending">New</option>
     <option value="preparing">Preparing</option>
@@ -424,28 +430,40 @@ async function openStatusMenu(id) {
   modal.appendChild(box);
   document.body.appendChild(modal);
 
-  // وظائف الأزرار
+  // زر إلغاء
   btnCancel.onclick = () => document.body.removeChild(modal);
 
+  // زر حفظ
   btnSave.onclick = async () => {
     const next = select.value;
-    if (["pending","preparing","onway","delivered","canceled"].includes(next)) {
-      try {
-        const res = await fetch(`https://smart-restorent-1.onrender.com/api/orders/${id}`, {
-          method: "PUT",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({ status: next })
-        });
-        const updated = await res.json();
-        const idx = orders.findIndex(x => x.order_id == updated.order_id);
-        if(idx > -1) orders[idx].status = updated.status;
+    if (!next) return;
 
-        applyFiltersAndRender();
-        document.body.removeChild(modal);
-      } catch(err) {
-        console.error("openStatusMenu:", err);
-        alert("An error occurred while updating status");
+    try {
+      const res = await fetch(`https://smart-restorent-1.onrender.com/api/orders/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: next })
+      });
+
+      if(!res.ok) throw new Error("Failed to update");
+
+      const updated = await res.json();
+
+      // تحديث الحالة مباشرة في الـ array
+      const idx = orders.findIndex(x => x.order_id == updated.order_id);
+      if(idx > -1){
+        orders[idx].status = updated.status;
       }
+
+      // إعادة رسم الجدول مباشرة بدون تغيير الفلتر
+      renderOrdersTable();
+      updateAllCircles();
+
+      // إغلاق المودال
+      document.body.removeChild(modal);
+    } catch(err) {
+      console.error(err);
+      alert("Failed to update order status");
     }
   };
 }
@@ -590,16 +608,4 @@ function updateStats(filteredOrders){
   const totalRevenue = arr.reduce((sum,o)=> sum + (Number(o.total)||0), 0);
   const statRevenueEl = $id("statRevenue");
   if(elExists(statRevenueEl)) statRevenueEl.textContent = totalRevenue.toLocaleString("en-US") + " DZD";
-}
-
-// --- ضمن applyFiltersAndRender() ---
-function applyFiltersAndRender(){
-  let f = [...orders];
-  
-  // ... هنا نفس كود الفلاتر الموجود لديك ...
-  
-  renderOrdersTable(f);
-  updateAllCircles(f);
-  renderCharts(f);
-  updateStats(f); // ← هذه السطر الجديد لتحديث البطاقة
 }

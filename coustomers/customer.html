@@ -248,7 +248,11 @@
                                  </div>
                                      <div class="form-group">
                                           <label>Health Condition (Optional)</label>
-                                          <input type="text" id="regHealth" placeholder="e.g. diabetic">
+                                          <select id="regHealth">
+                                                  <option value="">Not Sick</option>
+                                                  <option value="diabetic">Diabetic</option>
+                                                  <option value="hypertension">Hypertension</option>
+                                             </select>
                                      </div>
                          </div>
                     <div class="form-row">
@@ -294,16 +298,11 @@
                  <div class="form-group" id="tableSelectGroup">
                       <label>اختر الطاولة</label>
                      <select id="tableSelect">
-                           <option>Table 1 — 4 chairs</option>
-                           <option>Table 2 — 2 chairs</option>
+                           
                       </select>
                   </div>
 
-        <!-- وقت الحجز (مهم للتحقق من صلاحية الحجز) -->
-                  <div class="form-group" id="reservationTimeGroup">
-                        <label>وقت الحجز</label>
-                        <input type="datetime-local" id="reservationTime">
-                 </div>
+        
 
         <!-- عنوان التوصيل -->
                  <div class="form-group hidden" id="addressGroup">
@@ -354,7 +353,11 @@
 
                      <div class="form-group">
                          <label>Health Condition</label>
-                         <input type="text" id="setHealth">
+                         <select id="setHealth">
+                                <option value="">Not Sick</option>
+                                <option value="diabetic">Diabetic</option>
+                                <option value="hypertension">Hypertension</option>
+                         </select>
                      </div>
 
                      <div style="display:flex; gap:10px; margin-top:12px;">

@@ -9,9 +9,11 @@ from werkzeug.utils import secure_filename
 import uuid
 from ai_routes import ai_bp  # استيراد Blueprint
 import subprocess
+from datetime import datetime
+
 
 app = Flask(__name__)
-CORS(app, origins=["https://infosarafg.github.io"])
+CORS(app)
 app.register_blueprint(ai_bp)
 
 # ----- إعدادات أساسية -----
@@ -42,15 +44,13 @@ def uploaded_file(filename):
 # ----- Database connection -----
 def get_db_connection():
     return psycopg2.connect(
-        host=os.environ.get("DB_HOST"),
-        database=os.environ.get("DB_NAME"),
-        user=os.environ.get("DB_USER"),
-        password=os.environ.get("DB_PASSWORD"),
-        port=os.environ.get("DB_PORT", 5432),
+        user="postgres",
+        host="localhost",
+        database="restaurant_db",
+        password="sara",
+        port=5432,
         cursor_factory=RealDictCursor
-
     )
-
 
 # ------------------ API Meals ------------------
 @app.route('/api/meals', methods=['GET'])
@@ -391,17 +391,23 @@ def get_orders():
             SELECT
                 o.order_id,
                 o.customer_id,
-                c.first_name AS customer_first_name,
-                c.last_name AS customer_last_name,
+                c.first_name,
+                c.last_name,
                 o.meal_id,
                 m.name AS meal_name,
                 o.quantity,
                 o.price,
                 o.status,
+                o.order_type,
+                o.address,
+                o.table_id,
+                t.table_number,
+                o.reservation_time,
                 o.order_datetime
             FROM orders o
-            LEFT JOIN customers c ON o.customer_id = c.customer_id
-            LEFT JOIN meals m ON o.meal_id = m.meal_id
+            JOIN customers c ON o.customer_id = c.customer_id
+            JOIN meals m ON o.meal_id = m.meal_id
+            LEFT JOIN tables t ON o.table_id = t.table_id
             ORDER BY o.order_datetime DESC
         """
         cur.execute(query)
@@ -411,54 +417,85 @@ def get_orders():
 
         orders = []
         for r in rows:
-            total = float(r['price']) * int(r['quantity']) if r['price'] else None
             orders.append({
-                'order_id': r['order_id'],
-                'customer_id': r['customer_id'],
-                'customer_name': f"{r['customer_first_name'] or ''} {r['customer_last_name'] or ''}".strip(),
-                'meal_id': r['meal_id'],
-                'meal_name': r['meal_name'],
-                'quantity': int(r['quantity']),
-                'price': float(r['price']) if r['price'] else None,
-                'total': total,
-                'status': r['status'],
-                'order_datetime': r['order_datetime'].isoformat() if r['order_datetime'] else None,
+                "order_id": r["order_id"],
+                "customer_name": f"{r['first_name']} {r['last_name']}",
+                "meal_name": r["meal_name"],
+                "quantity": r["quantity"],
+                "price": float(r["price"]),
+                "total": float(r["price"]) * r["quantity"],
+                "status": r["status"],
+                "order_type": r["order_type"],
+                "address": r["address"],
+                "table_number": r["table_number"],
+                "reservation_time": r["reservation_time"].isoformat() if r["reservation_time"] else None,
+                "order_datetime": r["order_datetime"].isoformat()
             })
+
         return jsonify(orders)
+
     except Exception as e:
-        print(f"GET /api/orders: {e}")
+        print("GET /api/orders:", e)
         return jsonify({"error": "Server error"}), 500
+
 
 @app.route('/api/orders', methods=['POST'])
 def add_order():
     try:
         data = request.get_json()
-        customer_id = int(data.get('customer_id'))
-        meal_id = int(data.get('meal_id'))
-        quantity = int(data.get('quantity', 1))
-        price = data.get('price')
-        status = data.get('status', 'pending')
 
-        if not customer_id or not meal_id:
-            return jsonify({"error": "customer_id and meal_id are required"}), 400
+        customer_id = int(data["customer_id"])
+        meal_id = int(data["meal_id"])
+        quantity = int(data.get("quantity", 1))
+        price = float(data["price"])
+        status = data.get("status", "pending")
+        order_type = data.get("order_type", "delivery")
 
-        price_val = float(price) if price is not None else None
+        address = data.get("address")
+        table_id = data.get("table_id")
+        reservation_time = data.get("reservation_time")
+
+        if reservation_time:
+                reservation_time = datetime.fromisoformat(
+                reservation_time.replace("Z", "")
+           )
+
+        # تحقق ذكي
+        if order_type == "delivery" and not address:
+            return jsonify({"error": "Address required for delivery"}), 400
+
+        if order_type == "dinein" and (not table_id or not reservation_time):
+            return jsonify({"error": "Table & reservation time required for dine-in"}), 400
 
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO orders (customer_id, meal_id, quantity, price, status) VALUES (%s, %s, %s, %s, %s) RETURNING *",
-            (customer_id, meal_id, quantity, price_val, status)
-        )
+
+        cur.execute("""
+            INSERT INTO orders
+            (customer_id, meal_id, quantity, price, status, order_type, address, table_id, reservation_time)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            RETURNING *
+        """, (
+            customer_id,
+            meal_id,
+            quantity,
+            price,
+            status,
+            order_type,
+            address,
+            table_id,
+            reservation_time
+        ))
+
         order = cur.fetchone()
         conn.commit()
         cur.close()
         conn.close()
-        subprocess.run(["python", "train_model.py"])
 
         return jsonify(dict(order)), 201
+
     except Exception as e:
-        print(f"POST /api/orders: {e}")
+        print("POST /api/orders:", e)
         return jsonify({"error": "Server error"}), 500
 
 @app.route('/api/orders/<int:id>', methods=['PUT'])
@@ -466,16 +503,20 @@ def update_order(id):
     try:
         data = request.get_json()
         updates = {}
-        if 'customer_id' in data:
-            updates['customer_id'] = int(data['customer_id'])
-        if 'meal_id' in data:
-            updates['meal_id'] = int(data['meal_id'])
-        if 'quantity' in data:
-            updates['quantity'] = int(data['quantity'])
-        if 'price' in data:
-            updates['price'] = float(data['price']) if data['price'] is not None else None
+        if 'order_type' in data:
+               updates['order_type'] = data['order_type']
+        if 'address' in data:
+                updates['address'] = data['address']
+        if 'table_id' in data:
+                updates['table_id'] = data['table_id']
+        if 'reservation_time' in data and data['reservation_time']:
+                    updates['reservation_time'] = datetime.fromisoformat(
+                    data['reservation_time'].replace("Z", "")
+         )
+
         if 'status' in data:
-            updates['status'] = data['status']
+                updates['status'] = data['status']
+
 
         if not updates:
             return jsonify({"error": "no updatable fields provided"}), 400
@@ -545,35 +586,7 @@ def add_table():
     return jsonify(dict(table)), 201
 
 # ------------------ API Reservations ------------------
-@app.route('/api/reservations', methods=['POST'])
-def add_reservation():
-    try:
-        data = request.get_json()
-        customer_id = data.get('customer_id')
-        table_id = data.get('table_id')
-        reservation_datetime = data.get('reservation_datetime')
-        notes = data.get('notes')
 
-        if not customer_id or not table_id or not reservation_datetime:
-            return jsonify({"error": "Missing required fields"}), 400
-
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO reservations (customer_id, table_id, reservation_datetime, notes) VALUES (%s, %s, %s, %s) RETURNING *",
-            (customer_id, table_id, reservation_datetime, notes)
-        )
-        reservation = cur.fetchone()
-
-        cur.execute("UPDATE tables SET status='Reserved' WHERE table_id=%s", (table_id,))
-
-        conn.commit()
-        cur.close()
-        conn.close()
-        return jsonify(dict(reservation)), 201
-    except Exception as e:
-        print(f"POST /api/reservations: {e}")
-        return jsonify({"error": "Server error"}), 500
 
 # ------------------ Customers with Orders ------------------
 @app.route('/api/customers-with-orders', methods=['GET'])
@@ -647,6 +660,51 @@ def get_available_tables():
     except Exception as e:
         print(f"GET /api/available-tables: {e}")
         return jsonify({"error": "Server error"}), 500
+@app.route('/api/reservations', methods=['POST'])
+def reserve_table():
+    data = request.get_json()
+
+    customer_id = data.get('customer_id')
+    table_id = data.get('table_id')
+    reservation_time = data.get('reservation_time')
+
+    if not reservation_time:
+        reservation_time = datetime.now()
+
+    if not customer_id or not table_id:
+        return jsonify({"error": "Missing fields"}), 400
+
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    # تحقق أن الطاولة متاحة
+    cur.execute("SELECT status FROM tables WHERE table_id=%s", (table_id,))
+    table = cur.fetchone()
+
+    if not table or table['status'] != 'Available':
+        return jsonify({"error": "Table not available"}), 400
+
+    # إدخال الحجز
+    cur.execute("""
+        INSERT INTO reservations (customer_id, table_id, reservation_datetime)
+        VALUES (%s, %s, %s)
+        RETURNING *
+    """, (customer_id, table_id, reservation_time))
+
+    reservation = cur.fetchone()
+
+    # تغيير حالة الطاولة
+    cur.execute("""
+        UPDATE tables SET status='Reserved'
+        WHERE table_id=%s
+    """, (table_id,))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify(reservation), 201
+# ----- Run server -----
 
 # ----- Run server -----
 if __name__ == '__main__':
