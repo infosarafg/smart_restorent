@@ -60,7 +60,7 @@ function renderMeals(list = meals) {
   mealsTableBody.innerHTML = '';
   list.forEach((meal, index) => {
     const categoryName = meal.category_name || '';
-    const imageUrl = meal.image_url ? `https://smart-restorent-1.onrender.com/api${meal.image_url}` : 'default.png';
+    const imageUrl = meal.image_url ? `https://smart-restorent-1.onrender.com${meal.image_url}` : 'default.png';
     const row = document.createElement('tr');
     row.innerHTML = `
       <td><img src="${imageUrl}" width="60" height="60" style="object-fit:cover;border-radius:8px;"></td>
