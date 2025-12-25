@@ -2,7 +2,7 @@
 
 // Default API URLs
 const API_URL = "https://smart-restorent-1.onrender.com/api";
-const UPLOADS_URL = "https://smart-restorent-1.onrender.com/api/uploads";
+const UPLOADS_URL = "https://smart-restorent-1.onrender.com/uploads";
 
 // ---------- Shortcuts ----------
 const q = sel => document.querySelector(sel);
@@ -638,6 +638,8 @@ async function confirmAllOrders() {
     alert("❌ Error confirming orders");
   }
 }
+
+
 
 function closeSettings(){
     settingsModal.classList.add("hidden");
